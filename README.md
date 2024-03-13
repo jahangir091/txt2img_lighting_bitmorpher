@@ -1,1 +1,1 @@
-# txt2vid_lighting_bitmorpher
+# txt2img_lighting_bitmorpher
