@@ -4,6 +4,7 @@ from huggingface_hub import hf_hub_download
 from safetensors.torch import load_file
 import time
 import uvicorn
+import requests
 
 from fastapi import FastAPI, Body
 
@@ -17,6 +18,8 @@ repo = "ByteDance/SDXL-Lightning"
 ckpt = "sdxl_lightning_4step_unet.safetensors" # Use the correct ckpt for your step setting!
 
 
+txt2img_styles_res = requests.get('https://photolab-ai.com/media/giff/ai/txt2img_styles/txt2img_styles.json')
+styles_dict = txt2img_styles_res.json()
 
 # Load model.
 unet = UNet2DConditionModel.from_config(base, subfolder="unet").to("cuda", torch.float16)
@@ -27,6 +30,7 @@ pipe = StableDiffusionXLPipeline.from_pretrained(base, unet=unet, torch_dtype=to
 pipe.scheduler = EulerDiscreteScheduler.from_config(pipe.scheduler.config, timestep_spacing="trailing")
 
 app.pipe = pipe
+app.txt2img_styles = styles_dict
 
 @app.post("/ai/api/v1/txt2img")
 def txt2img_lighting(
@@ -43,7 +47,11 @@ def txt2img_lighting(
 ):
     start_time = time.time()
 
-    # output_file_name = uuid.uuid4().hex[:20] + '.png'
+    style_dict = next((d for d in app.styles_dict if d.get("id") == style_id), None)
+    if style_dict:
+        prompt = style_dict['prompt'].format(prompt=prompt)
+
+
     output = pipe(prompt, num_inference_steps=4, guidance_scale=0, num_images_per_prompt=batch_count)
 
     out_image_directory_name = '/out_lighting_images/'
@@ -55,6 +63,7 @@ def txt2img_lighting(
         out_image_paths.append('/media' + out_image_directory_name + out_image_path.split('/')[-1])
 
     print('total generated imaged: {0}'.format(len(output.images)))
+    torch.cuda.empty_cache()
 
     return {
         "success": True,
