@@ -36,7 +36,7 @@ def txt2img_lighting(
         batch_count: int = Body(1, title="no of batch to produce at a time"),
         steps: int = Body(None, title="steps for image generation"),
         cfg_scale: float = Body(None, title="cfg scale"),
-        style_id: str = Body("base", title='selected style of user'),
+        style_id: int = Body(1, title='selected style of user'),
         height: int = Body(1024, title='height of generated image'),
         width: int = Body(1024, title='width of generated image')
 
