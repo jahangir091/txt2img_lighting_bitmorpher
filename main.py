@@ -30,16 +30,21 @@ app.pipe = pipe
 
 @app.post("/ai/api/v1/txt2img")
 def txt2img_lighting(
-        prompt: str = Body("", title='Prompt'),
-        steps: int = Body(4, title='Number of inference steps'),
-        style_id: int = Body(1, title='Style id'),
-        num_images_per_prompt: int = Body(1, title='Number of images to be generated'),
+        prompt: str = Body(title='user prompt'),
+        model_id: int = Body(title='model unique id'),
+        seed: int = Body(-1, title="seed value"),
+        batch_count: int = Body(1, title="no of batch to produce at a time"),
+        steps: int = Body(None, title="steps for image generation"),
+        cfg_scale: float = Body(None, title="cfg scale"),
+        style_id: str = Body("base", title='selected style of user'),
+        height: int = Body(1024, title='height of generated image'),
+        width: int = Body(1024, title='width of generated image')
 
 ):
     start_time = time.time()
 
     # output_file_name = uuid.uuid4().hex[:20] + '.png'
-    output = pipe(prompt, num_inference_steps=4, guidance_scale=0, num_images_per_prompt=num_images_per_prompt)
+    output = pipe(prompt, num_inference_steps=4, guidance_scale=0, num_images_per_prompt=batch_count)
 
     out_image_directory_name = '/out_lighting_images/'
     out_image_paths = []
