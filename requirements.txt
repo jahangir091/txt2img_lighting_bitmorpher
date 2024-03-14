@@ -2,3 +2,4 @@ torch
 diffusers
 uvicorn
 fastapi
+transformers

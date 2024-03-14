@@ -35,7 +35,7 @@ def txt2img_lighting(
     start_time = time.time()
 
     # output_file_name = uuid.uuid4().hex[:20] + '.png'
-    output = pipe(prompt, num_inference_steps=4, guidance_scale=0)
+    output = pipe(prompt, num_inference_steps=4, guidance_scale=0, num_images_per_prompt=4)
 
     out_image_directory_name = '/out_lighting_images/'
     out_image_path = get_img_path(out_image_directory_name)
@@ -48,7 +48,7 @@ def txt2img_lighting(
         "success": True,
         "message": "Returned output successfully",
         "server_process_time": time.time() - start_time,
-        "output_media_url": '/media' + out_image_directory_name + out_image_path.split('/')[-1]
+        "output_media_urls": '/media' + out_image_directory_name + out_image_path.split('/')[-1]
     }
 
 
