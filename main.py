@@ -47,9 +47,12 @@ def txt2img_lighting(
 ):
     start_time = time.time()
 
-    style_dict = next((d for d in app.styles_dict if d.get("id") == style_id), None)
-    if style_dict:
-        prompt = style_dict['prompt'].format(prompt=prompt)
+    global_style_dict = next((d for d in app.txt2img_styles if d.get("id") == 1), None)
+    if style_id != 1:
+        style_dict = next((d for d in app.txt2img_styles if d.get("id") == style_id), None)
+        if style_dict:
+            prompt = style_dict['prompt'].format(prompt=prompt)
+    prompt = prompt + global_style_dict['prompt']
 
 
     output = pipe(prompt, num_inference_steps=4, guidance_scale=0, num_images_per_prompt=batch_count)
