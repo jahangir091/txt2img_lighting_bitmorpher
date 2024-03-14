@@ -31,11 +31,11 @@ app.pipe = pipe
 @app.post("/ai/api/v1/txt2img")
 def txt2img_lighting(
         prompt: str = Body(title='user prompt'),
-        model_id: int = Body(title='model unique id'),
+        model_id: int = Body(1, title='model unique id'),
         seed: int = Body(-1, title="seed value"),
         batch_count: int = Body(1, title="no of batch to produce at a time"),
-        steps: int = Body(None, title="steps for image generation"),
-        cfg_scale: float = Body(None, title="cfg scale"),
+        steps: int = Body(4, title="steps for image generation"),
+        cfg_scale: float = Body(0.0, title="cfg scale"),
         style_id: int = Body(1, title='selected style of user'),
         height: int = Body(1024, title='height of generated image'),
         width: int = Body(1024, title='width of generated image')
