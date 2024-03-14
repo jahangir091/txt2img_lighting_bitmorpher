@@ -30,25 +30,32 @@ app.pipe = pipe
 
 @app.post("/ai/api/v1/txt2img")
 def txt2img_lighting(
-        prompt: str = Body("", title='prompt'),
+        prompt: str = Body("", title='Prompt'),
+        steps: int = Body(4, title='Number of inference steps'),
+        style_id: int = Body(1, title='Style id'),
+        num_images_per_prompt: int = Body(1, title='Number of images to be generated'),
+
 ):
     start_time = time.time()
 
     # output_file_name = uuid.uuid4().hex[:20] + '.png'
-    output = pipe(prompt, num_inference_steps=4, guidance_scale=0, num_images_per_prompt=4)
+    output = pipe(prompt, num_inference_steps=4, guidance_scale=0, num_images_per_prompt=num_images_per_prompt)
 
     out_image_directory_name = '/out_lighting_images/'
-    out_image_path = get_img_path(out_image_directory_name)
+    out_image_paths = []
+    for img in output.images:
+        out_image_path = get_img_path(out_image_directory_name)
+        # save the resulting image
+        img.save(out_image_path)
+        out_image_paths.append('/media' + out_image_directory_name + out_image_path.split('/')[-1])
 
-    # save the resulting image
-    output.images[0].save(out_image_path)
-    print(len(output.images))
+    print('total generated imaged: {0}'.format(len(output.images)))
 
     return {
         "success": True,
         "message": "Returned output successfully",
         "server_process_time": time.time() - start_time,
-        "output_media_urls": '/media' + out_image_directory_name + out_image_path.split('/')[-1]
+        "output_media_urls": out_image_paths
     }
 
 
