@@ -1,6 +1,7 @@
 torch
 diffusers
-uvicorn
+uvicorn[standard]
 fastapi
 transformers
 accelerate
+gunicorn

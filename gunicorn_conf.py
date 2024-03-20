@@ -10,6 +10,7 @@ bind = 'unix:/run/txt2img_lighting/gunicorn.sock'
 # Worker Options
 # workers = cpu_count() + 1
 workers = 1
+TIMEOUT=300
 worker_class = 'uvicorn.workers.UvicornWorker'
 
 # Logging Options
