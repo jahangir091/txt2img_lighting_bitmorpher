@@ -57,7 +57,7 @@ def txt2img_lighting(
     negative_prompt += global_style_dict['negative_prompt']
 
             # 768, width 416
-    output = pipe(prompt, num_inference_steps=4, guidance_scale=0, num_images_per_prompt=batch_count, height=1024, width=1024, negative_prompt=negative_prompt)
+    output = pipe(prompt, num_inference_steps=4, guidance_scale=0, num_images_per_prompt=batch_count, height=1024, width=1024, negative_prompt=negative_prompt, seed=seed)
 
     out_image_directory_name = '/out_lighting_images/'
     out_image_paths = []
