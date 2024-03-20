@@ -35,6 +35,7 @@ app.txt2img_styles = styles_dict
 @app.post("/ai/api/v1/txt2img")
 def txt2img_lighting(
         prompt: str = Body(title='user prompt'),
+        negative_prompt: str = Body('', title='user prompt'),
         model_id: int = Body(1, title='model unique id'),
         seed: int = Body(-1, title="seed value"),
         batch_count: int = Body(1, title="no of batch to produce at a time"),
@@ -52,10 +53,11 @@ def txt2img_lighting(
         style_dict = next((d for d in app.txt2img_styles if d.get("id") == style_id), None)
         if style_dict:
             prompt = style_dict['prompt'].format(prompt=prompt)
-    prompt = prompt + global_style_dict['prompt']
+    prompt += global_style_dict['prompt']
+    negative_prompt += global_style_dict['negative_prompt']
 
-
-    output = pipe(prompt, num_inference_steps=4, guidance_scale=0, num_images_per_prompt=batch_count)
+            # 768, width 416
+    output = pipe(prompt, num_inference_steps=4, guidance_scale=0, num_images_per_prompt=batch_count, height=1024, width=1024, negative_prompt=negative_prompt)
 
     out_image_directory_name = '/out_lighting_images/'
     out_image_paths = []
@@ -65,7 +67,7 @@ def txt2img_lighting(
         img.save(out_image_path)
         out_image_paths.append('/media' + out_image_directory_name + out_image_path.split('/')[-1])
 
-    print('total generated imaged: {0}'.format(len(output.images)))
+    print('total generated imaged: {0}, height {1}, width {2}'.format(len(output.images), height, width))
     torch.cuda.empty_cache()
 
     return {
