@@ -77,6 +77,10 @@ def txt2img_lighting(
         "output_media_urls": out_image_paths
     }
 
+@app.get("/ai/api/v1/txt2img-lighting-server-test")
+def illusion_server_test():
+    return {"server is working fine. OK!"}
+
 
 if __name__ == '__main__':
     uvicorn.run(app, host="0.0.0.0", port=8006)

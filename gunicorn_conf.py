@@ -1,8 +1,6 @@
 import os
 from multiprocessing import cpu_count
 
-# current directory path
-dir_path = os.path.dirname(os.path.realpath(__name__))
 
 # Socket path
 bind = 'unix:/run/txt2img_lighting/gunicorn.sock'
