@@ -32,8 +32,9 @@ pipe.scheduler = EulerDiscreteScheduler.from_config(pipe.scheduler.config, times
 app.pipe = pipe
 app.txt2img_styles = styles_dict
 
+
 @app.post("/ai/api/v1/txt2img")
-def txt2img_lighting(
+async def txt2img_lighting(
         prompt: str = Body(title='user prompt'),
         negative_prompt: str = Body('', title='user prompt'),
         model_id: int = Body(1, title='model unique id'),
@@ -77,8 +78,9 @@ def txt2img_lighting(
         "output_media_urls": out_image_paths
     }
 
+
 @app.get("/ai/api/v1/txt2img-lighting-server-test")
-def illusion_server_test():
+def txt2img_lighting_server_test():
     return {"server is working fine. OK!"}
 
 
