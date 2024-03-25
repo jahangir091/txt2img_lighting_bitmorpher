@@ -57,23 +57,27 @@ async def txt2img_lighting(
     prompt += global_style_dict['prompt']
     negative_prompt += global_style_dict['negative_prompt']
 
-            # 768, width 416
-    output = pipe(prompt, num_inference_steps=4, guidance_scale=0, num_images_per_prompt=batch_count, height=1024, width=1024, negative_prompt=negative_prompt, seed=seed)
-
     out_image_directory_name = '/out_lighting_images/'
     out_image_paths = []
-    for img in output.images:
-        out_image_path = get_img_path(out_image_directory_name)
-        # save the resulting image
-        img.save(out_image_path)
-        out_image_paths.append('/media' + out_image_directory_name + out_image_path.split('/')[-1])
-
-    print('total generated imaged: {0}, height {1}, width {2}'.format(len(output.images), height, width))
-    torch.cuda.empty_cache()
+    try:
+        output = pipe(prompt, num_inference_steps=4, guidance_scale=0, num_images_per_prompt=batch_count, height=1024, width=1024, negative_prompt=negative_prompt, seed=seed)
+        for img in output.images:
+            out_image_path = get_img_path(out_image_directory_name)
+            # save the resulting image
+            img.save(out_image_path)
+            out_image_paths.append('/media' + out_image_directory_name + out_image_path.split('/')[-1])
+        print('total generated imaged: {0}, height {1}, width {2}'.format(len(output.images), height, width))
+        success = True
+        message = "Returned output successfully"
+    except Exception as e:
+        success = False
+        message = str(e)
+    finally:
+        torch.cuda.empty_cache()
 
     return {
-        "success": True,
-        "message": "Returned output successfully",
+        "success": success,
+        "message": message,
         "server_process_time": time.time() - start_time,
         "output_media_urls": out_image_paths
     }
