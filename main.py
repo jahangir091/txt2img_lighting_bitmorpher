@@ -40,6 +40,7 @@ app.txt2img_styles = styles_dict
 
 @app.post("/ai/api/v1/txt2img")
 async def txt2img_lighting(
+        background_tasks: BackgroundTasks,
         prompt: str = Body(title='user prompt'),
         negative_prompt: str = Body('', title='user prompt'),
         model_id: int = Body(1, title='model unique id'),
@@ -80,9 +81,8 @@ async def txt2img_lighting(
     finally:
         torch.cuda.empty_cache()
 
-    tasks = BackgroundTasks()
     date_time = str(datetime.datetime.now())
-    tasks.add_task(log_txt2img_data, prompt, date_time, out_image_paths)
+    background_tasks.add_task(log_txt2img_data, prompt, date_time, out_image_paths)
 
     return {
         "success": success,
