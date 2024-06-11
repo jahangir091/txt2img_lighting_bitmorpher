@@ -95,7 +95,7 @@ def txt2img_images():
     image_directory = '/tmp/.temp/out_lighting_images'
     out_image_directory_name = '/out_lighting_images/'
     files = list_files_by_creation_date(image_directory)
-    images = ['/' + str('/media' + out_image_directory_name + image.split('/')[-1]) for image in files]
+    images = [str('/media' + out_image_directory_name + image.split('/')[-1]) for image in files]
     return {
         "images": images
     }
