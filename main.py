@@ -93,9 +93,9 @@ def txt2img_lighting_server_test():
 @app.get("/ai/api/v1/txt2img-images")
 def txt2img_images():
     image_directory = '/tmp/.temp/out_lighting_images'
-    out_images_directory_name = '/out_lighting_images/'
+    out_image_directory_name = '/out_lighting_images/'
     files = list_files_by_creation_date(image_directory)
-    images = ['/' + str(os.environ.get('SERVER_NAME')) + '/media' + out_images_directory_name + image.split('/')[-1] for image in files]
+    images = ['/' + str('/media' + out_image_directory_name + image.split('/')[-1]) for image in files]
     return {
         "images": images
     }
