@@ -1,3 +1,4 @@
+import datetime
 import os
 
 import torch
@@ -9,8 +10,10 @@ import uvicorn
 import requests
 
 from fastapi import FastAPI, Body
+from fastapi import BackgroundTasks
 
 from utils import get_img_path, list_files_by_creation_date
+from utils import log_txt2img_data, read_txt2img_log_data
 
 app = FastAPI()
 
@@ -77,6 +80,10 @@ async def txt2img_lighting(
     finally:
         torch.cuda.empty_cache()
 
+    tasks = BackgroundTasks()
+    date_time = str(datetime.datetime.now())
+    tasks.add_task(log_txt2img_data, prompt, date_time, out_image_paths)
+
     return {
         "success": success,
         "message": message,
@@ -92,12 +99,9 @@ def txt2img_lighting_server_test():
 
 @app.get("/ai/api/v1/txt2img-images")
 def txt2img_images():
-    image_directory = '/tmp/.temp/out_lighting_images'
-    out_image_directory_name = '/out_lighting_images/'
-    files = list_files_by_creation_date(image_directory)
-    images = [str('/media' + out_image_directory_name + image.split('/')[-1]) for image in files]
+    image_data = read_txt2img_log_data()
     return {
-        "images": images
+        "images": image_data
     }
 
 
