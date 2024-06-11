@@ -1,3 +1,5 @@
+import os
+
 import torch
 from diffusers import StableDiffusionXLPipeline, UNet2DConditionModel, EulerDiscreteScheduler
 from huggingface_hub import hf_hub_download
@@ -8,7 +10,7 @@ import requests
 
 from fastapi import FastAPI, Body
 
-from utils import get_img_path
+from utils import get_img_path, list_files_by_creation_date
 
 app = FastAPI()
 
@@ -86,6 +88,17 @@ async def txt2img_lighting(
 @app.get("/ai/api/v1/txt2img-lighting-server-test")
 def txt2img_lighting_server_test():
     return {"server is working fine. OK!"}
+
+
+@app.get("/ai/api/v1/txt2img-images")
+def txt2img_images():
+    image_directory = '/tmp/.temp/out_lighting_images'
+    out_images_directory_name = '/out_lighting_images/'
+    files = list_files_by_creation_date(image_directory)
+    images = ['/' + str(os.environ.get('SERVER_NAME')) + '/media' + out_images_directory_name + image.split('/')[-1] for image in files]
+    return {
+        "images": images
+    }
 
 
 if __name__ == '__main__':
