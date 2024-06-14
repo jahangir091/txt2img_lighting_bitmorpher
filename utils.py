@@ -50,7 +50,7 @@ def read_txt2img_log_data():
         for row in reader:
             data = dict(zip(header, row))
             images.append(data)
-        return images
+        return list(reversed(images))
 
 
 if __name__ == '__main__':
